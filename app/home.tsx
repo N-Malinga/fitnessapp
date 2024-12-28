@@ -1,12 +1,18 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useFetch } from "../hooks/useFetch";
 import ItemCard from "../components/ItemCard";
+import { useClickContext, ClickProvider } from "../components/ClickContext";
 
-export default function Home() {
+function HomeComponent() {
   const { data: exercises, loading, error } = useFetch(
     "https://exercisedb-api.vercel.app/api/v1/muscles/upper%20back/exercises"
   );
+  const { state, dispatch } = useClickContext();
+
+  const handleItemClick = () => {
+    dispatch({ type: "INCREMENT" });
+  };
 
   if (loading) {
     return (
@@ -26,21 +32,37 @@ export default function Home() {
   }
 
   return (
-    <FlatList
-      data={exercises}
-      keyExtractor={(item) => item.exerciseId}
-      renderItem={({ item }) => <ItemCard exercise={item} />}
-      contentContainerStyle={styles.container}
-      ListHeaderComponent={
-        <Text style={styles.header}>Upper Back Exercises</Text>
-      }
-    />
+    <View style={styles.container}>
+      <FlatList
+        data={exercises}
+        keyExtractor={(item) => item.exerciseId}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={handleItemClick}>
+            <ItemCard exercise={item} />
+          </TouchableOpacity>
+        )}
+        ListHeaderComponent={
+          <Text style={styles.header}>Upper Back Exercises</Text>
+        }
+      />
+      <TouchableOpacity style={styles.floatingButton}>
+        <Text style={styles.buttonText}>Clicks: {state.count}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+export default function Home() {
+  return (
+    <ClickProvider>
+      <HomeComponent />
+    </ClickProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 15,
+    flex: 1,
     backgroundColor: "#f4f4f8",
   },
   loadingContainer: {
@@ -66,8 +88,27 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 20,
-    color: "#00796B", // Dark teal
-    paddingTop: 40, // Added padding to prevent overlap with the phone's top section
+    marginBottom: 10,
+    color: "#00796B",
+    paddingTop: 50,
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "#007bff",
+    borderRadius: 50,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
