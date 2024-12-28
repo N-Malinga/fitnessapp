@@ -1,67 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator } from "react-native";
-
-type Exercise = {
-  exerciseId: string;
-  name: string;
-  gifUrl: string;
-  instructions: string[];
-  targetMuscles: string[];
-  bodyParts: string[];
-  equipments: string[];
-  secondaryMuscles: string[];
-};
+import React from "react";
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from "react-native";
+import { useFetch } from "../hooks/useFetch";
+import ItemCard from "../components/ItemCard";
 
 export default function Home() {
-  const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchExercises = async () => {
-      try {
-        const response = await fetch("https://exercisedb-api.vercel.app/api/v1/muscles/upper%20back/exercises");
-        const json = await response.json();
-
-        if (json.success) {
-          // Correctly access the nested `exercises` array
-          setExercises(json.data.exercises);
-        } else {
-          console.error("Failed to retrieve exercises.");
-        }
-      } catch (error) {
-        console.error("Error fetching exercises:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchExercises();
-  }, []);
-
-  const renderCard = ({ item }: { item: Exercise }) => (
-    <View style={styles.card}>
-      <Image source={{ uri: item.gifUrl }} style={styles.image} />
-      <Text style={styles.name}>{item.name}</Text>
-      <Text style={styles.label}>Target Muscles:</Text>
-      <Text style={styles.text}>{item.targetMuscles.join(", ")}</Text>
-      <Text style={styles.label}>Body Parts:</Text>
-      <Text style={styles.text}>{item.bodyParts.join(", ")}</Text>
-      <Text style={styles.label}>Equipment:</Text>
-      <Text style={styles.text}>{item.equipments.join(", ")}</Text>
-      <Text style={styles.label}>Secondary Muscles:</Text>
-      <Text style={styles.text}>{item.secondaryMuscles.join(", ")}</Text>
-      <Text style={styles.label}>Instructions:</Text>
-      {item.instructions.map((instruction, index) => (
-        <Text key={index} style={styles.text}>{instruction}</Text>
-      ))}
-    </View>
+  const { data: exercises, loading, error } = useFetch(
+    "https://exercisedb-api.vercel.app/api/v1/muscles/upper%20back/exercises"
   );
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading Exercises...</Text>
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={styles.loadingText}>Loading Exercises...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Error: {error}</Text>
       </View>
     );
   }
@@ -70,62 +29,45 @@ export default function Home() {
     <FlatList
       data={exercises}
       keyExtractor={(item) => item.exerciseId}
-      renderItem={renderCard}
+      renderItem={({ item }) => <ItemCard exercise={item} />}
       contentContainerStyle={styles.container}
-      ListHeaderComponent={<Text style={styles.header}>Upper Back Exercises</Text>}
+      ListHeaderComponent={
+        <Text style={styles.header}>Upper Back Exercises</Text>
+      }
     />
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    backgroundColor: "#f8f8f8",
+    padding: 15,
+    backgroundColor: "#f4f4f8",
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#555",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    fontSize: 16,
+    color: "red",
+  },
   header: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
-    color: "#333",
-  },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 15,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  image: {
-    width: "100%",
-    height: 150,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "#333",
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "bold",
-    marginTop: 10,
-    color: "#555",
-  },
-  text: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 5,
+    color: "#00796B", // Dark teal
+    paddingTop: 40, // Added padding to prevent overlap with the phone's top section
   },
 });
