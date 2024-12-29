@@ -3,11 +3,13 @@ import { View, Text, StyleSheet } from 'react-native';
 import Register from '../register';
 import Login from '../login';
 import Home from '../home';
+import { NavigationContainer } from '@react-navigation/native';
+import {Link} from 'expo-router';
 
 function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Home />
+      <Login />
     </View>
     
   );

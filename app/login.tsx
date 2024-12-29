@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { loginUser } from "@/hooks/useAuth";
+import { Link, router } from "expo-router";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -18,7 +19,10 @@ export default function Login() {
       return;
     }
 
-    //navigation.navigate("Home", { username });
+    router.push({
+      pathname: "/home",
+      params: { username },
+    });
   };
 
   return (
@@ -38,9 +42,13 @@ export default function Login() {
         onChangeText={setPassword}
       />
       <Button title="Login" onPress={handleLogin} />
-      {/* <Text style={styles.link} onPress={() => navigation.navigate("Register")}>
-        Don't have an account? Register
-      </Text> */}
+      <Text style={styles.link}>
+        Don't have an account? 
+        <Link href="/register" style={styles.link}>
+          Register  
+        </Link>
+      </Text>
+      
     </View>
   );
 }

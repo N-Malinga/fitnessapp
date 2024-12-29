@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { registerUser } from "@/hooks/useAuth";
+import { Link, router } from "expo-router";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -25,7 +26,8 @@ export default function Register() {
     }
 
     Alert.alert("Success", "Registration successful.");
-    //navigation.navigate("Login");
+
+    router.push("/login");
   };
 
   return (
@@ -52,9 +54,12 @@ export default function Register() {
         onChangeText={setConfirmPassword}
       />
       <Button title="Register" onPress={handleRegister} />
-      {/* <Text style={styles.link} onPress={() => navigation.navigate("Login")}>
-        Already have an account? Login
-      </Text> */}
+      <Text style={styles.link}>
+        Already have an account?
+        <Link href="/login" style={styles.link}>
+          Login
+        </Link>
+      </Text>
     </View>
   );
 }
@@ -62,6 +67,6 @@ export default function Register() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", padding: 50, width: "100%" },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 10, borderRadius: 5,},
+  input: { borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 10, borderRadius: 5, },
   link: { color: "blue", marginTop: 10, textAlign: "center" },
 });

@@ -3,8 +3,14 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity }
 import { useFetch } from "../hooks/useFetch";
 import ItemCard from "../components/ItemCard";
 import { useClickContext, ClickProvider } from "../components/ClickContext";
+import { useSearchParams } from "expo-router/build/hooks";
+import { Link } from "expo-router";
 
 function HomeComponent() {
+
+  const searchParams = useSearchParams();
+  const username = searchParams.get('username');
+  
   const { data: exercises, loading, error } = useFetch(
     "https://exercisedb-api.vercel.app/api/v1/muscles/upper%20back/exercises"
   );
@@ -33,6 +39,10 @@ function HomeComponent() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.row}>
+        <Text style={styles.userNameStyle}>Welcome, {username}!</Text>
+        <Link href="/login"><Text style={styles.logOutStyle}>Log Out</Text></Link>
+      </View>
       <FlatList
         data={exercises}
         keyExtractor={(item) => item.exerciseId}
@@ -65,6 +75,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f4f4f8",
   },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%', // Adjust width as needed
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    backgroundColor: "#E0F2F1",
+  },
+  logOutStyle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'red',
+    padding: 20,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -90,7 +114,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
     color: "#00796B",
-    paddingTop: 50,
+    paddingTop: 10,
+  },
+  userNameStyle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "left",
+    marginBottom: 0,
+    color: "#00796B",
+    padding: 20,
+    backgroundColor: "#E0F2F1",
   },
   floatingButton: {
     position: "absolute",
