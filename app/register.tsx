@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { registerUser } from "@/hooks/useAuth";
 import { Link, router } from "expo-router";
 
@@ -53,9 +53,11 @@ export default function Register() {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-      <Button title="Register" onPress={handleRegister} />
+      <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+        <Text style={styles.registerButtonText}>Register</Text>
+      </TouchableOpacity>
       <Text style={styles.link}>
-        Already have an account?
+        Already have an account? 
         <Link href="/login" style={styles.link}>
           Login
         </Link>
@@ -67,6 +69,17 @@ export default function Register() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", padding: 50, width: "100%" },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 10, borderRadius: 5, },
-  link: { color: "blue", marginTop: 10, textAlign: "center" },
+  input: { borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 10, borderRadius: 5 },
+  registerButton: {
+    backgroundColor: "#00796B",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  registerButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  link: { color: "grey", marginTop: 10, textAlign: "center" },
 });

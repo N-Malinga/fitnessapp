@@ -84,9 +84,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#E0F2F1",
   },
   logOutStyle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: 'red',
+    color:"#0c706b",
     padding: 20,
   },
   loadingContainer: {
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
     color: "#00796B",
-    paddingTop: 10,
+    paddingTop: 20,
   },
   userNameStyle: {
     fontSize: 20,
